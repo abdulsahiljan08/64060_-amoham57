@@ -1,0 +1,28 @@
+---
+title: "FML Assignment 1"
+author: "Abdul Sahil Mohammed"
+date: "2024-02-05"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+## Executive Summary
+## Below is the Analysis of the Data gathered about the electric gadgets and their prices along with the ratings of the products by their Titles and Features
+## Source- https://www.kaggle.com/
+```{r}
+Eledata <- read.csv("Dataset.csv" , header = TRUE, sep = ",")
+head(Eledata)
+```
+```{r}
+class(Eledata)
+summary(Eledata)
+dim(Eledata)
+```
+```{r}
+as.character(Eledata$Price)
+```
+```{r}
+plot(Eledata)
+```
+
