@@ -1,0 +1,61 @@
+---
+title: "Assignment FML"
+author: "Abdul Sahil Mohammed"
+date: "2024-02-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+sp.Data <- read.csv("C:/Users/abdul/OneDrive/AssignmentFML/StudentsPerformance.csv")
+View(sp.Data)
+```
+
+## Print the discreptive Statistics
+```{r}
+summary(sp.Data)
+
+```
+## print the quantative variables
+```{r}
+mean(sp.Data$math.score)
+median(sp.Data$reading.score)
+summary(sp.Data$writing.score)
+```
+## print qualitative variables
+```{r}
+summary(sp.Data$parenta.level.of.education)
+summary(sp.Data$gender)
+```
+## printing the transformation of writing score input
+```{r}
+## assuming df is your data frame
+sp.Data$math.score <- sqrt(sp.Data$writing.score)
+
+## print the first few rows to see the changes
+head(sp.Data)
+hist(sp.Data$writing.score,xlab = "writing.score",ylab = "gender",main = "Histogram of writing.score",col = "yellow")
+
+```
+```{r}
+## assuming sp.Data is your dataframe
+barplot(table(sp.Data$math.score),main = "Barplot of math.score",xlab = "lunch"
+        ,ylab = "math.score",
+        col = "green"
+        )
+
+```
+```{r}
+## assuming DF is your dataframe
+plot(sp.Data$math.score,sp.Data$reading.score,
+     main = "scatterplot of math.score vs. reading.score",
+     xlab = "math.score",
+     ylab = "reading.score",
+     col = "orange")
+```
+
+
