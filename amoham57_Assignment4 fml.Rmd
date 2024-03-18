@@ -1,0 +1,85 @@
+---
+title: "amoham57_Assignment4"
+author: "Abdul Sahil Mohammed"
+date: "2024-03-17"
+output: html_document
+---
+```{r}
+library(factoextra)
+library(ggplot2)
+library(tidyverse)
+library(ISLR)
+library(NbClust)
+library(cluster)
+```
+#Let's load the following DataSet 
+```{r}
+Pharmaceutical.data <- read.csv("C:/Users/abdul/OneDrive/AssignmentFML/Pharmaceuticals.csv")
+```
+
+
+```{r}
+R <- na.omit(Pharmaceutical.data)
+summary(R)
+```
+#Now lets Set row names of the data frame 'R' to the values in its first column
+```{r}
+row.names(R) <- R[,1]
+
+Phar.data <- R[,3:11]
+
+head(Phar.data)
+```
+#Here, we Scale the data in the 'Pharmacist.data' data frame to standardize variables
+```{r}
+
+Pharmacist.data <- scale (Phar.data)
+#Display the rows of the 'Pharmacist.data' data frame
+head(Pharmacist.data)
+```
+
+```{r}
+fviz_nbclust(Phar.data, kmeans, method = "silhouette") + labs(subtitle = "silhouette Method")
+
+```
+# Set a seed for reproducibility
+```{r}
+
+set.seed(64060)
+
+k8 <- kmeans(Phar.data, centers = 5, nstart = 26)
+
+k8$centers
+```
+
+```{r}
+fviz_cluster(k8, data = Pharmacist.data)
+```
+#here we Calculate the Euclidean distance matrix between observations in the 'Pharmacist.data' dataset
+```{r}
+
+distance <- dist(Pharmacist.data, method = "euclidean")
+fviz_dist(distance)
+```
+```{r}
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+```
+
+```{r}
+fit <-kmeans(Pharmacist.data, 5)
+aggregate(Pharmacist.data, by = list(fit$cluster), FUN=mean)
+```
+#Create a new data frame 'Pharmacist.data1' by combining the original data 'Pharmacist.data1' with the cluster assignments from 'fit$cluster'
+```{r}
+Pharmacist.data1 <- data.frame(Phar.data, fit$cluster)
+
+# Display the contents of the newly created data frame 'Pharmacist.data1'
+Pharmacist.data1
+```
+```{r}
+clusplot(Pharmacist.data, fit$cluster, color = TRUE, shade = FALSE, labels = 2, lines = 0)
+```
+
+
+
+
