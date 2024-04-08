@@ -1,0 +1,126 @@
+---
+title: "amoham57_Assignment5"
+author: "Abdul Sahil Mohammed"
+date: "2024-04-08"
+output: html_document
+---
+```{r}
+getwd()
+```
+
+# Necessary libraries
+```{r}
+library(stats)
+library(cluster)
+library(factoextra)
+library(dplyr)
+library(caret)
+library(tidyr)
+library(fpc)
+```
+ 
+```{r}
+
+library(readxl)
+creals.Data <- read.csv("C:/Users/abdul/OneDrive/AssignmentFML/Cereals.csv")
+ext.cereals <- read.csv("C:/Users/abdul/OneDrive/AssignmentFML/Cereals.csv", row.names = 1)
+```
+
+# Eliminating the columns from the data frame
+```{r}
+ext.cereals <- subset(ext.cereals, select = -c(mfr, type))
+```
+# Show the initial few rows of the updated dataset.
+```{r}
+head(ext.cereals)
+str(ext.cereals)
+```
+# leaving out missing values
+```{r}
+ext.cereals <- na.omit(ext.cereals)
+head(ext.cereals)
+```
+# Make the numerical data normal.
+```{r}
+cerl.numeric <- ext.cereals %>% select_if(is.numeric)
+cerl.scaled <- scale(cerl.numeric)
+head(cerl.scaled)
+```
+## Agnes Implementation
+```{r}
+ext.cereals.E <- dist(ext.cereals, method = "euclidean")   
+hc.1 <- hclust(ext.cereals.E, method = "complete")
+
+```
+# Plot Dendogram
+```{r}
+plot(hc.1, cex = 0.6, hang = -1)
+```
+# Computing Agnes using several other methods
+```{r}
+hc.single.crl <- agnes(cerl.scaled, method = "single")
+hc.complete.crl <- agnes(cerl.scaled, method = "complete")
+hc.average.crl <- agnes(cerl.scaled, method = "average")
+hc.ward.crl <- agnes(cerl.scaled, method = "ward")
+```
+
+# Comparing the Agglomerative coefficients
+```{r}
+print(hc.single.crl$ac)
+print(hc.complete.crl$ac)
+print(hc.average.crl$ac)
+print(hc.ward.crl$ac)
+pltree(hc.ward.crl, cex = 0.6, hang = -1, main = "Dendrogram of the agnes")
+```
+# Altering the Dendrogram
+```{r}
+summary(ext.cereals)
+```
+# Plot/Dendrogram Reduction
+# Reducing
+```{r}
+ext.cereals.E <- dist(ext.cereals, method = "euclidean") 
+hc.ward.crl <- hclust(ext.cereals.E,method = "complete")
+```
+# Ploting 
+```{r}
+plot(hc.ward.crl, cex = 0.6)
+rect.hclust(hc.ward.crl, k = 4, border = 1:4)
+```
+## Assessing whether using kMeans to the problem is appropriate and estimating its performance.
+```{r}
+set.seed(123)  
+partition.clr <- sample(2, nrow(cerl.scaled), replace = TRUE, prob = c(0.7, 0.3))
+cerls.A <- cerl.scaled[partition.clr == 1, ]
+cerls.B <- cerl.scaled[partition.clr == 2, ]
+```
+
+# Hierarchical on A
+```{r}
+Hc.A <- agnes(cerls.A, method = "ward")
+
+```
+
+# Hierarchical on B
+```{r}
+Cluster.B.Assignment <- cutree(Hc.A, k = 3)
+```
+
+# Matching the lenth with A & B
+```{r}
+Cluster.B.Assignment <- Cluster.B.Assignment[partition.clr == 2] 
+consistency <- table(Cluster.B.Assignment, partition.clr[partition.clr == 2])
+print("Cluster Consistency Assignment: All.Bran.with.Additionsl.Fiber")
+```
+```{r}
+hc.healthy <- agnes(cerl.scaled, method = "ward")
+optimal.clusters <- which.max(hc.healthy$ac)
+clustering.assignments <- cutree(hc.healthy, k = optimal.clusters)
+desired.cluster.number <- 1
+healthy.cerls <- ext.cereals[clustering.assignments == desired.cluster.number, ]
+print("NutritiousCereals:Wheat")
+```
+```{r}
+print(healthy.cerls)
+```
+
